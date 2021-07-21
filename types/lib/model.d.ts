@@ -630,7 +630,6 @@ export interface CountWithOptions<TAttributes = any> extends CountOptions<TAttri
  */
 export interface FindAndCountOptions<TAttributes = any> extends CountOptions<TAttributes>, FindOptions<TAttributes> { }
 
-
 /**
  * Options for Model.findAndCountAll when GROUP BY is used
  */
@@ -1892,6 +1891,46 @@ export abstract class Model<TModelAttributes extends {} = any, TCreationAttribut
     this: ModelStatic<M>,
     options?: CountOptions<M['_attributes']>
   ): Promise<number>;
+  
+   /**
+   * Find all the rows matching your query, within a specified offset / limit, and get the total number of
+   * rows matching your query. This is very usefull for paging
+   *
+   * ```js
+   * Model.findAndCountAll({
+   *   where: ...,
+   *   limit: 12,
+   *   offset: 12
+   * }).then(result => {
+   *   ...
+   * })
+   * ```
+   * In the above example, `result.rows` will contain rows 13 through 24, while `result.count` will return
+   * the
+   * total number of rows that matched your query.
+   *
+   * When you add includes, only those which are required (either because they have a where clause, or
+   * because
+   * `required` is explicitly set to true on the include) will be added to the count part.
+   *
+   * Suppose you want to find all users who have a profile attached:
+   * ```js
+   * User.findAndCountAll({
+   *   include: [
+   *      { model: Profile, required: true}
+   *   ],
+   *   limit: 3
+   * });
+   * ```
+   * Because the include for `Profile` has `required` set it will result in an inner join, and only the users
+   * who have a profile will be counted. If we remove `required` from the include, both users with and
+   * without
+   * profiles will be counted
+   */
+  public static findAndCountAll<M extends Model>(
+    this: ModelStatic<M>,
+    options?: FindAndCountWithOptions<M['_attributes']>
+  ): Promise<{ rows: M[]; count: { [key: string]: number } }>;
 
   /**
    * Find all the rows matching your query, within a specified offset / limit, and get the total number of
