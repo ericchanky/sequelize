@@ -625,7 +625,16 @@ export interface CountWithOptions<TAttributes = any> extends CountOptions<TAttri
   group: GroupOption;
 }
 
+/**
+ * Options for Model.findAndCountAll method
+ */
 export interface FindAndCountOptions<TAttributes = any> extends CountOptions<TAttributes>, FindOptions<TAttributes> { }
+
+
+/**
+ * Options for Model.findAndCountAll when GROUP BY is used
+ */
+export interface FindAndCountWithOptions<TAttributes = any> extends CountWithOptions<TAttributes>, FindOptions<TAttributes> { }
 
 /**
  * Options for Model.build method
